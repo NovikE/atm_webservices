@@ -7,8 +7,11 @@ import model.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import webservice.GetClient;
 
 public class RestAssuredTest {
+
+    public static final String expectedContentType = "application/json; charset=utf-8";
 
     @BeforeTest
     public void initTest() {
@@ -17,27 +20,22 @@ public class RestAssuredTest {
 
     @Test
     public void checkStatusCode() {
-        Response response = RestAssured.when()
-                 .get("/users")
-                 .andReturn();
-        Assert.assertEquals(response.getStatusCode(), 200);
+            Assert.assertEquals(GetClient.getUsers().getStatusCode(), 200);
         }
 
     @Test
     public void checkResponseHeader(){
-         Response response = RestAssured.when()
-                 .get("/users")
-                 .andReturn();
-         String rpContentTypeHeader = response.getHeader("Content-Type");
-         Assert.assertEquals(rpContentTypeHeader, "application/json; charset=utf-8");
+
+        String rpContentTypeHeader = GetClient.getUsers().getHeader("Content-Type");
+        Assert.assertEquals(rpContentTypeHeader, expectedContentType);
         }
+
     @Test
     public void checkResponseBody(){
-        Response response = RestAssured.when()
-                .get("/users")
-                .andReturn();
-        ResponseBody responseBody = response.getBody();
+
+        ResponseBody responseBody = GetClient.getUsers().getBody();
         User[] users = responseBody.as(User[].class);
         Assert.assertEquals(users.length, 10);
+
     }
 }
